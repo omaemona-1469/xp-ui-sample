@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <link rel="icon" href="data:," />
+    <title>Windows XP風 UIサンプル</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+
+    <!-- icon sprite -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <defs>
+        <symbol id="i-flag" viewBox="0 0 24 24">
+          <path d="M3 5.2 10.8 4v7.2H3z" fill="#f65314"/>
+          <path d="M12.4 3.7 21 2.6v8.6h-8.6z" fill="#7fba00"/>
+          <path d="M3 12.8h7.8V20L3 18.8z" fill="#00a4ef"/>
+          <path d="M12.4 12.8H21v8.6l-8.6-1.1z" fill="#ffb900"/>
+        </symbol>
+        <symbol id="i-computer" viewBox="0 0 48 48">
+          <rect x="5" y="7" width="30" height="23" rx="2" fill="#2b5cab"/>
+          <rect x="8" y="10" width="24" height="17" fill="#9fd8f0"/>
+          <path d="M8 27l9-17h6L14 27z" fill="#d8f2fc" opacity=".7"/>
+          <rect x="16" y="30" width="8" height="5" fill="#7a7a72"/>
+          <rect x="9" y="35" width="22" height="3" rx="1" fill="#a9a698"/>
+          <rect x="33" y="24" width="10" height="17" rx="1.5" fill="#d8d4c0" stroke="#8f8b74"/>
+          <rect x="36" y="27" width="4" height="3" fill="#3a7bd5"/>
+          <circle cx="38" cy="37" r="1.6" fill="#59b359"/>
+        </symbol>
+        <symbol id="i-folder" viewBox="0 0 48 48">
+          <path d="M4 10a2 2 0 0 1 2-2h11l4 5h21a2 2 0 0 1 2 2v21a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" fill="#f7cf52" stroke="#c8a028" stroke-width="1.4"/>
+          <path d="M4 17h40v19a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" fill="#ffdf75"/>
+        </symbol>
+        <symbol id="i-bin" viewBox="0 0 48 48">
+          <path d="M13 14h22l-2.4 26a3 3 0 0 1-3 2.7H18.4a3 3 0 0 1-3-2.7z" fill="#cfd6da" stroke="#8b959c" stroke-width="1.4"/>
+          <path d="M10 14h28" stroke="#6f7a80" stroke-width="3" stroke-linecap="round"/>
+          <path d="M18 8c4-3 8-3 12 0l1.5 4h-15z" fill="#9fd8f0" stroke="#6fa8c8"/>
+          <path d="M19 20l1.4 16M24 21v15M29 20l-1.4 16" stroke="#9aa4aa" stroke-width="1.6"/>
+        </symbol>
+        <symbol id="i-doc" viewBox="0 0 48 48">
+          <path d="M12 4h17l8 8v32H12z" fill="#fdfdfa" stroke="#8f8b74" stroke-width="1.4"/>
+          <path d="M29 4v8h8" fill="#d8ecfa" stroke="#8f8b74" stroke-width="1.2"/>
+          <path d="M16 20h16M16 25h16M16 30h16M16 35h10" stroke="#5b8fd6" stroke-width="2"/>
+        </symbol>
+        <symbol id="i-gear" viewBox="0 0 48 48">
+          <circle cx="24" cy="24" r="8" fill="#fdfdfa" stroke="#5b7ea8" stroke-width="2.4"/>
+          <path d="M24 5v7M24 36v7M5 24h7M36 24h7M10.5 10.5l5 5M32.5 32.5l5 5M37.5 10.5l-5 5M15.5 32.5l-5 5" stroke="#7d9fc4" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="24" cy="24" r="8" fill="none" stroke="#5b7ea8" stroke-width="2.4"/>
+        </symbol>
+        <symbol id="i-flower" viewBox="0 0 48 48">
+          <g fill="#fff">
+            <circle cx="24" cy="12" r="7"/><circle cx="35" cy="19" r="7"/><circle cx="31" cy="32" r="7"/>
+            <circle cx="17" cy="32" r="7"/><circle cx="13" cy="19" r="7"/>
+          </g>
+          <circle cx="24" cy="22" r="6.5" fill="#ffcf3f"/>
+        </symbol>
+        <symbol id="i-globe" viewBox="0 0 48 48">
+          <circle cx="24" cy="24" r="17" fill="#7ec3ee" stroke="#2b6cb0" stroke-width="1.6"/>
+          <path d="M10 19c5-2 9 1 13-1 3-1.6 8 0 12 2-1 5-5 6-9 5s-7-3-11-2c-5 1.2-11-1-13-5z" fill="#59b359"/>
+          <path d="M14 33c4 2 8 1 11 3 2.4 1.6 7 1 9-2" fill="none" stroke="#59b359" stroke-width="3.4" stroke-linecap="round"/>
+        </symbol>
+        <symbol id="i-back" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10" fill="#59b359" stroke="#2f7a2f" stroke-width="1.2"/>
+          <path d="M15.5 6.5 9 12l6.5 5.5v-3.6H18v-3.8h-2.5z" fill="#fff"/>
+        </symbol>
+        <symbol id="i-search" viewBox="0 0 24 24">
+          <circle cx="10.5" cy="10.5" r="6" fill="#bfe3f7" stroke="#5b7ea8" stroke-width="1.8"/>
+          <path d="M15 15l6 6" stroke="#8a6d1f" stroke-width="3" stroke-linecap="round"/>
+        </symbol>
+        <symbol id="i-help" viewBox="0 0 24 24">
+          <rect x="4" y="3" width="14" height="18" rx="1.5" fill="#3a7bd5" stroke="#2456a8"/>
+          <path d="M9.5 8.2c.3-1.2 1.3-2 2.6-2 1.4 0 2.5 1 2.5 2.2 0 2-2.3 1.9-2.3 3.6" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/>
+          <circle cx="12.3" cy="16.6" r="1.2" fill="#fff"/>
+          <path d="M18 6l2 1.4V21h-6" fill="#2b5cab"/>
+        </symbol>
+        <symbol id="i-info" viewBox="0 0 48 48">
+          <circle cx="24" cy="24" r="20" fill="#2f7de1" stroke="#1553a8" stroke-width="2"/>
+          <circle cx="24" cy="14.5" r="3.2" fill="#fff"/>
+          <rect x="21.4" y="20" width="5.2" height="15" rx="1" fill="#fff"/>
+        </symbol>
+        <symbol id="i-ques" viewBox="0 0 48 48">
+          <circle cx="24" cy="24" r="20" fill="#2f7de1" stroke="#1553a8" stroke-width="2"/>
+          <path d="M18 17.5c.8-3 3.2-4.7 6.2-4.7 3.2 0 5.7 2.1 5.7 4.9 0 4.4-5.4 4.3-5.4 8" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/>
+          <circle cx="24.4" cy="35.6" r="2.8" fill="#fff"/>
+        </symbol>
+        <symbol id="i-warn" viewBox="0 0 48 48">
+          <path d="M24 5 45 41H3z" fill="#ffd83d" stroke="#c8a028" stroke-width="2" stroke-linejoin="round"/>
+          <rect x="21.8" y="17" width="4.4" height="13" rx="1" fill="#4a3c00"/>
+          <circle cx="24" cy="35.6" r="2.6" fill="#4a3c00"/>
+        </symbol>
+        <symbol id="i-err" viewBox="0 0 48 48">
+          <circle cx="24" cy="24" r="20" fill="#e5482e" stroke="#a82a14" stroke-width="2"/>
+          <path d="M16.5 16.5l15 15M31.5 16.5l-15 15" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+        </symbol>
+        <symbol id="i-spk" viewBox="0 0 24 24">
+          <path d="M4 9v6h4l6 5V4L8 9z" fill="#fff"/>
+          <path d="M17 9.5a4 4 0 0 1 0 5M19.2 7a7.4 7.4 0 0 1 0 10" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/>
+        </symbol>
+        <symbol id="i-power" viewBox="0 0 24 24">
+          <path d="M12 3v8" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M6.3 6.5a8 8 0 1 0 11.4 0" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+        </symbol>
+        <symbol id="i-key" viewBox="0 0 24 24">
+          <circle cx="8.5" cy="12" r="4.6" fill="none" stroke="#fff" stroke-width="2.2"/>
+          <path d="M12.5 9.5 21 3M17 6l3 3M14.5 8.5l2.6 2.6" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+        </symbol>
+        <symbol id="i-grid" viewBox="0 0 24 24">
+          <rect x="3.5" y="3.5" width="7" height="7" fill="#7ec3ee" stroke="#2b6cb0" stroke-width="1.2"/>
+          <rect x="13.5" y="3.5" width="7" height="7" fill="#7ec3ee" stroke="#2b6cb0" stroke-width="1.2"/>
+          <rect x="3.5" y="13.5" width="7" height="7" fill="#7ec3ee" stroke="#2b6cb0" stroke-width="1.2"/>
+          <rect x="13.5" y="13.5" width="7" height="7" fill="#7ec3ee" stroke="#2b6cb0" stroke-width="1.2"/>
+        </symbol>
+        <symbol id="i-min" viewBox="0 0 12 12"><rect x="1.5" y="8.6" width="8" height="2.2" fill="#fff"/></symbol>
+        <symbol id="i-max" viewBox="0 0 12 12"><rect x="2" y="2" width="8.4" height="8.4" fill="none" stroke="#fff" stroke-width="1.7"/><rect x="2" y="2" width="8.4" height="2.4" fill="#fff"/></symbol>
+        <symbol id="i-restore" viewBox="0 0 12 12"><path d="M3.6 4.8V2.2h6.2v6.2h-2" fill="none" stroke="#fff" stroke-width="1.3"/><rect x="1.6" y="4.4" width="6.4" height="6" fill="#3c6ff0" stroke="#fff" stroke-width="1.3"/></symbol>
+        <symbol id="i-close" viewBox="0 0 12 12"><path d="M2 2l8 8M10 2l-8 8" stroke="#fff" stroke-width="1.9" stroke-linecap="round"/></symbol>
+      </defs>
+    </svg>
+
+    <div class="desktop" id="desktop">
+      <svg class="hills" viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 190 C 220 90, 430 60, 640 130 C 850 200, 1010 150, 1200 110 L1200 300 L0 300 Z" fill="#5fae3f"/>
+        <path d="M0 235 C 260 160, 520 190, 760 235 C 950 270, 1080 250, 1200 225 L1200 300 L0 300 Z" fill="#4c9a33"/>
+        <path d="M0 190 C 220 90, 430 60, 640 130 C 850 200, 1010 150, 1200 110 L1200 132 C 1010 172, 850 220, 640 152 C 430 84, 220 112, 0 210 Z" fill="#79c455" opacity=".55"/>
+      </svg>
+
+      <nav class="desktop-icons" aria-label="デスクトップ アイコン">
+        <button class="dicon" data-open="win-main" type="button" style="left:8px; top:10px;">
+          <svg><use href="#i-computer"/></svg><span>マイ コンピュータ</span>
+        </button>
+        <button class="dicon" data-open="win-dialogs" type="button" style="left:8px; top:100px;">
+          <svg><use href="#i-folder"/></svg><span>ダイアログの見本</span>
+        </button>
+        <button class="dicon" data-open="win-notepad" type="button" style="left:8px; top:190px;">
+          <svg><use href="#i-doc"/></svg><span>メモ帳</span>
+        </button>
+        <button class="dicon" id="dicon-bin" type="button" style="left:8px; top:280px;">
+          <svg><use href="#i-bin"/></svg><span>ごみ箱</span>
+        </button>
+      </nav>
+
+      <!-- ============ main showcase window ============ -->
+      <section class="window active" id="win-main" data-title="コントロール見本 — UIコンポーネント" style="left:110px; top:18px; width:min(680px,94vw); height:min(600px,calc(100dvh - 70px));" aria-label="UIコンポーネント見本ウィンドウ">
+        <header class="titlebar">
+          <svg class="ticon"><use href="#i-gear"/></svg>
+          <span class="ttitle">コントロール見本 — UIコンポーネント</span>
+          <div class="tbtns">
+            <button class="tbtn" data-act="min" type="button" aria-label="最小化"><svg><use href="#i-min"/></svg></button>
+            <button class="tbtn" data-act="max" type="button" aria-label="最大化"><svg><use href="#i-max"/></svg></button>
+            <button class="tbtn close" data-act="close" type="button" aria-label="閉じる"><svg><use href="#i-close"/></svg></button>
+          </div>
+        </header>
+        <div class="winbody scrollable">
+          <div class="menubar" role="menubar">
+            <div class="mitem">
+              <button class="mbtn" type="button" data-menu="m-file"><u>フ</u>ァイル(F)</button>
+              <div class="menu" id="m-file">
+                <button type="button" data-menu-act="新規作成">新規作成</button>
+                <button type="button" data-menu-act="開く">開く…</button>
+                <button type="button" data-menu-act="上書き保存">上書き保存</button>
+                <hr>
+                <button type="button" data-menu-act="終了">終了</button>
+              </div>
+            </div>
+            <div class="mitem">
+              <button class="mbtn" type="button" data-menu="m-edit"><u>編</u>集(E)</button>
+              <div class="menu" id="m-edit">
+                <button type="button" data-menu-act="元に戻す">元に戻す</button>
+                <button type="button" disabled>やり直し</button>
+                <hr>
+                <button type="button" data-menu-act="すべて選択">すべて選択</button>
+              </div>
+            </div>
+            <div class="mitem">
+              <button class="mbtn" type="button" data-menu="m-help"><u>ヘ</u>ルプ(H)</button>
+              <div class="menu" id="m-help">
+                <button type="button" data-menu-act="バージョン情報">バージョン情報</button>
+              </div>
+            </div>
+          </div>
+          <div class="toolbar">
+            <button class="tool" type="button" data-menu-act="戻る"><svg><use href="#i-back"/></svg>戻る</button>
+            <span class="tool-sep"></span>
+            <button class="tool" type="button" data-menu-act="検索"><svg><use href="#i-search"/></svg>検索</button>
+            <button class="tool" type="button" data-menu-act="フォルダ"><svg><use href="#i-folder"/></svg>フォルダ</button>
+            <span class="tool-sep"></span>
+            <button class="tool" type="button" data-menu-act="ヘルプ"><svg><use href="#i-help"/></svg>ヘルプ</button>
+          </div>
+          <div class="addressbar">
+            <span>アドレス(D)</span>
+            <span class="addr"><svg width="16" height="16"><use href="#i-gear"/></svg>マイ コンピュータ › コントロール見本</span>
+          </div>
+
+          <div class="tabstrip" role="tablist" aria-label="見本のカテゴリ">
+            <button class="tab" role="tab" type="button" aria-selected="true" data-tab="p-buttons">ボタン</button>
+            <button class="tab" role="tab" type="button" aria-selected="false" data-tab="p-form">フォーム</button>
+            <button class="tab" role="tab" type="button" aria-selected="false" data-tab="p-lists">リストとツリー</button>
+            <button class="tab" role="tab" type="button" aria-selected="false" data-tab="p-etc">進捗・その他</button>
+          </div>
+
+          <!-- tab: buttons -->
+          <div class="tabpage scrollable" id="p-buttons" role="tabpanel">
+            <p class="lead">Luna テーマのボタンです。ホバーでオレンジに光り、押すと沈み込みます。既定のボタンは青い縁取りが入ります。</p>
+            <div class="stack">
+              <fieldset class="group">
+                <legend>標準ボタン</legend>
+                <div class="rowflex">
+                  <button class="xp-btn" type="button" data-count>OK</button>
+                  <button class="xp-btn default" type="button" data-count>既定のボタン</button>
+                  <button class="xp-btn" type="button" disabled>無効なボタン</button>
+                  <button class="xp-btn small" type="button" data-count>小さいボタン</button>
+                </div>
+                <p class="hint" style="margin:10px 0 0;">ボタンを押した回数: <b id="btn-count">0</b> 回（ステータス バーにも表示されます）</p>
+              </fieldset>
+              <fieldset class="group">
+                <legend>押し込み状態（トグル風）</legend>
+                <div class="rowflex">
+                  <button class="xp-btn toggle" type="button" aria-pressed="false">太字</button>
+                  <button class="xp-btn toggle" type="button" aria-pressed="false">斜体</button>
+                  <button class="xp-btn toggle pressed" type="button" aria-pressed="true">下線</button>
+                </div>
+                <p class="hint" style="margin:10px 0 0;">クリックで押したままの状態を切り替えられます。</p>
+              </fieldset>
+              <fieldset class="group">
+                <legend>グループ ボックス</legend>
+                <p style="margin:0; line-height:1.6;">関連するコントロールは、この枠と青い見出しでまとめます。このページの各セクションがその実例です。</p>
+              </fieldset>
+            </div>
+          </div>
+
+          <!-- tab: form -->
+          <div class="tabpage scrollable" id="p-form" role="tabpanel" hidden>
+            <form id="demo-form" novalidate>
+              <div class="grid2">
+                <div>
+                  <label class="field" for="f-name">名前(N)</label>
+                  <input class="xp-input" id="f-name" type="text" placeholder="例: 山田 花子" autocomplete="off">
+                </div>
+                <div>
+                  <label class="field" for="f-pass">パスワード(P)</label>
+                  <input class="xp-input" id="f-pass" type="password" value="himitsu" autocomplete="off">
+                </div>
+                <div>
+                  <label class="field" for="f-theme">テーマ(T)</label>
+                  <select class="xp-select" id="f-theme">
+                    <option>Windows XP スタイル</option>
+                    <option>Windows クラシック</option>
+                    <option>銀色（シルバー）</option>
+                    <option>オリーブ グリーン</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="field" for="f-num">フォント サイズ（スピン ボタン）</label>
+                  <div class="spinwrap">
+                    <input class="xp-input" id="f-num" type="text" inputmode="numeric" value="11">
+                    <span class="spinbtns">
+                      <button type="button" id="spin-up" aria-label="増やす">▲</button>
+                      <button type="button" id="spin-down" aria-label="減らす">▼</button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div style="margin-top:12px;">
+                <label class="field" for="f-memo">メモ(M)</label>
+                <textarea class="xp-textarea" id="f-memo">複数行のテキスト入力欄です。右下を引っ張ると広げられます。</textarea>
+              </div>
+              <div class="grid2" style="margin-top:12px;">
+                <fieldset class="group">
+                  <legend>チェック ボックス</legend>
+                  <label class="checkline"><input type="checkbox" checked>タスク バーを表示</label><br>
+                  <label class="checkline"><input type="checkbox" checked>クイック起動を表示</label><br>
+                  <label class="checkline"><input type="checkbox">時計を表示</label><br>
+                  <label class="checkline"><input type="checkbox" disabled>無効な項目</label>
+                </fieldset>
+                <fieldset class="group">
+                  <legend>オプション（ラジオ）</legend>
+                  <label class="radioline"><input type="radio" name="pos" checked>下に固定</label><br>
+                  <label class="radioline"><input type="radio" name="pos">上に固定</label><br>
+                  <label class="radioline"><input type="radio" name="pos">自動的に隠す</label>
+                </fieldset>
+              </div>
+              <div class="rowflex" style="margin-top:14px; justify-content:flex-end;">
+                <button class="xp-btn" type="reset">リセット(R)</button>
+                <button class="xp-btn default" type="submit">登録する</button>
+              </div>
+              <p class="hint" style="margin:8px 0 0;">名前を空にして「登録する」を押すと、エラー ダイアログが出ます。</p>
+            </form>
+          </div>
+
+          <!-- tab: lists -->
+          <div class="tabpage scrollable" id="p-lists" role="tabpanel" hidden>
+            <div class="stack">
+              <div>
+                <h3 class="sect">リスト ビュー（詳細表示）</h3>
+                <div class="listview scrollable" style="max-height:150px;">
+                  <table>
+                    <thead><tr><th>名前</th><th>種類</th><th>サイズ</th></tr></thead>
+                    <tbody id="lv-body">
+                      <tr><td>マイドキュメント</td><td>ファイル フォルダ</td><td>—</td></tr>
+                      <tr class="selected"><td>壁紙（Bliss）.bmp</td><td>ビットマップ イメージ</td><td>1,245 KB</td></tr>
+                      <tr><td>サンプル ピクチャ</td><td>ファイル フォルダ</td><td>—</td></tr>
+                      <tr><td>readme.txt</td><td>テキスト ドキュメント</td><td>2 KB</td></tr>
+                      <tr><td>システム設定.ini</td><td>構成設定</td><td>1 KB</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p class="hint" style="margin:6px 0 0;">行をクリックすると選択状態になります。選択中: <b id="lv-sel">壁紙（Bliss）.bmp</b></p>
+              </div>
+              <div class="grid2">
+                <div>
+                  <h3 class="sect">リスト ボックス（複数選択）</h3>
+                  <select class="listbox" id="listbox" multiple size="5">
+                    <option selected>画面のプロパティ</option>
+                    <option>サウンドとオーディオ</option>
+                    <option selected>マウス</option>
+                    <option>キーボード</option>
+                    <option>プログラムの追加と削除</option>
+                  </select>
+                  <p class="hint" style="margin:6px 0 0;">選択中: <b id="lb-sel">画面のプロパティ、マウス</b></p>
+                </div>
+                <div>
+                  <h3 class="sect">ツリー ビュー</h3>
+                  <div class="tree scrollable" style="max-height:170px;">
+                    <ul>
+                      <li>
+                        <span class="tnode" data-node><button class="ttoggle" type="button" aria-label="折りたたみ">−</button><svg width="16" height="16"><use href="#i-folder"/></svg>デスクトップ</span>
+                        <ul>
+                          <li>
+                            <span class="tnode" data-node><button class="ttoggle" type="button" aria-label="折りたたみ">−</button>マイ コンピュータ</span>
+                            <ul>
+                              <li><span class="tnode" data-node><span class="tspacer"></span>ローカル ディスク (C:)</span></li>
+                              <li><span class="tnode" data-node><span class="tspacer"></span>DVD ドライブ (D:)</span></li>
+                            </ul>
+                          </li>
+                          <li><span class="tnode" data-node><span class="tspacer"></span>マイ ドキュメント</span></li>
+                          <li><span class="tnode" data-node><span class="tspacer"></span>ごみ箱</span></li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- tab: etc -->
+          <div class="tabpage scrollable" id="p-etc" role="tabpanel" hidden>
+            <div class="stack">
+              <fieldset class="group">
+                <legend>プログレス バー</legend>
+                <div class="progress"><div class="bar" id="prog-bar"></div></div>
+                <div class="rowflex" style="margin-top:10px;">
+                  <button class="xp-btn" type="button" id="prog-start">コピーを開始</button>
+                  <span class="hint" id="prog-label">待機中です。</span>
+                </div>
+              </fieldset>
+              <fieldset class="group">
+                <legend>トラック バー（スライダー）</legend>
+                <label class="field" for="vol">音量: <b id="vol-val">50</b></label>
+                <input class="trackbar" id="vol" type="range" min="0" max="100" value="50">
+                <div class="rowflex" style="justify-content:space-between;"><span class="hint">小</span><span class="hint">大</span></div>
+              </fieldset>
+              <div class="grid2">
+                <fieldset class="group">
+                  <legend>カレンダー</legend>
+                  <div class="cal" id="cal"></div>
+                </fieldset>
+                <fieldset class="group">
+                  <legend>枠のスタイル</legend>
+                  <div class="stack" style="gap:8px;">
+                    <div class="sunken">へこんだ枠（サンクン）: 入力欄や表示エリアに使います。</div>
+                    <p class="hint" style="margin:0;">ツールチップは、下のボタンにカーソルを合わせると表示されます。</p>
+                    <div><button class="xp-btn" type="button" title="これがツールチップです">ツールチップ付きボタン</button></div>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+          </div>
+
+          <footer class="statusbar">
+            <span class="panel grow" id="status-main">準備完了</span>
+            <span class="panel">オブジェクト: 4</span>
+            <span class="panel">Luna テーマ</span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- ============ dialogs showcase window ============ -->
+      <section class="window" id="win-dialogs" data-title="ダイアログの見本" style="left:806px; top:60px; width:min(330px,92vw);" aria-label="ダイアログ見本ウィンドウ">
+        <header class="titlebar">
+          <svg class="ticon"><use href="#i-ques"/></svg>
+          <span class="ttitle">ダイアログの見本</span>
+          <div class="tbtns">
+            <button class="tbtn" data-act="min" type="button" aria-label="最小化"><svg><use href="#i-min"/></svg></button>
+            <button class="tbtn" data-act="max" type="button" aria-label="最大化"><svg><use href="#i-max"/></svg></button>
+            <button class="tbtn close" data-act="close" type="button" aria-label="閉じる"><svg><use href="#i-close"/></svg></button>
+          </div>
+        </header>
+        <div class="winbody scrollable" style="padding:12px;">
+          <p class="lead">メッセージ ボックスの種類です。ボタンを押すと、このデスクトップの上にダイアログが開きます。</p>
+          <div class="stack" style="gap:8px;">
+            <button class="xp-btn" type="button" data-dialog="info">情報ダイアログ</button>
+            <button class="xp-btn" type="button" data-dialog="ques">確認ダイアログ（はい / いいえ）</button>
+            <button class="xp-btn" type="button" data-dialog="warn">警告ダイアログ</button>
+            <button class="xp-btn" type="button" data-dialog="err">エラー ダイアログ</button>
+          </div>
+          <p class="hint" style="margin:12px 0 0;">ダイアログの答え: <b id="dialog-result">（まだ開いていません）</b></p>
+          <p class="hint">ウィンドウはタイトル バーをドラッグして移動でき、右下の角（斜線のグリップ）や左右・下の縁をドラッグするとサイズを変更できます。最小化・最大化・閉じるボタンも動きます。閉じたウィンドウはデスクトップのアイコンやタスク バーから開き直せます。</p>
+        </div>
+        <footer class="statusbar"><span class="panel grow">4 種類のダイアログ</span></footer>
+      </section>
+
+      <!-- ============ notepad window ============ -->
+      <section class="window" id="win-notepad" data-title="無題 — メモ帳" style="left:830px; top:330px; width:min(340px,92vw); height:250px;" aria-label="メモ帳ウィンドウ">
+        <header class="titlebar">
+          <svg class="ticon"><use href="#i-doc"/></svg>
+          <span class="ttitle">無題 — メモ帳</span>
+          <div class="tbtns">
+            <button class="tbtn" data-act="min" type="button" aria-label="最小化"><svg><use href="#i-min"/></svg></button>
+            <button class="tbtn" data-act="max" type="button" aria-label="最大化"><svg><use href="#i-max"/></svg></button>
+            <button class="tbtn close" data-act="close" type="button" aria-label="閉じる"><svg><use href="#i-close"/></svg></button>
+          </div>
+        </header>
+        <div class="winbody">
+          <div class="menubar">
+            <span class="mitem"><button class="mbtn" type="button">ファイル(F)</button></span>
+            <span class="mitem"><button class="mbtn" type="button">編集(E)</button></span>
+            <span class="mitem"><button class="mbtn" type="button">書式(O)</button></span>
+            <span class="mitem"><button class="mbtn" type="button">表示(V)</button></span>
+          </div>
+          <textarea class="notepad-area scrollable" aria-label="メモ帳のテキスト">メモ帳の見本です。この欄はそのまま編集できます。
+
+XP 風 UI の要点
+・青いグラデーションのタイトル バー
+・緑のスタート ボタン
+・#ECE9D8 のウィンドウ背景
+・Tahoma フォントと立体感のあるボタン</textarea>
+        </div>
+      </section>
+
+      <!-- modal dialog -->
+      <div class="dialog-veil" id="veil">
+        <section class="window dialog active" id="dlg" style="left:50%; top:38%; transform:translate(-50%,-50%);" role="alertdialog" aria-modal="true" aria-labelledby="dlg-title">
+          <header class="titlebar">
+            <span class="ttitle" id="dlg-title">メッセージ</span>
+            <div class="tbtns">
+              <button class="tbtn close" type="button" id="dlg-x" aria-label="閉じる"><svg><use href="#i-close"/></svg></button>
+            </div>
+          </header>
+          <div class="winbody">
+            <div class="dmsg">
+              <svg id="dlg-icon"><use href="#i-info" id="dlg-use"/></svg>
+              <p id="dlg-text"></p>
+            </div>
+            <div class="dbtns" id="dlg-btns"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- ============ start menu ============ -->
+    <div class="startmenu" id="startmenu" role="menu" aria-label="スタート メニュー">
+      <div class="sm-head">
+        <span class="sm-avatar"><svg><use href="#i-flower"/></svg></span>
+        <b>あなた</b>
+      </div>
+      <div class="sm-cols">
+        <div class="sm-left">
+          <button class="sm-item" type="button" data-open="win-main"><svg><use href="#i-gear"/></svg><span>コントロール見本<small>UIコンポーネント集</small></span></button>
+          <button class="sm-item" type="button" data-open="win-notepad"><svg><use href="#i-doc"/></svg><span>メモ帳<small>テキスト エディタ</small></span></button>
+          <button class="sm-item" type="button" data-open="win-dialogs"><svg><use href="#i-ques"/></svg><span>ダイアログの見本<small>メッセージ ボックス</small></span></button>
+          <div class="sm-sep"></div>
+          <button class="sm-item" type="button" data-open="win-main"><svg><use href="#i-globe"/></svg><span>インターネット<small>ブラウザの見本</small></span></button>
+          <button class="sm-all" type="button" id="sm-all">すべてのプログラム ▶</button>
+        </div>
+        <div class="sm-right">
+          <button class="sm-item" type="button" data-open="win-main"><svg><use href="#i-folder"/></svg>マイ ドキュメント</button>
+          <button class="sm-item" type="button" data-open="win-main"><svg><use href="#i-computer"/></svg>マイ コンピュータ</button>
+          <div class="sm-sep"></div>
+          <button class="sm-item light" type="button" data-open="win-dialogs"><svg><use href="#i-gear"/></svg>コントロール パネル</button>
+          <button class="sm-item light" type="button" data-open="win-main"><svg><use href="#i-help"/></svg>ヘルプとサポート</button>
+          <button class="sm-item light" type="button" data-open="win-main"><svg><use href="#i-search"/></svg>検索</button>
+          <div class="sm-sep"></div>
+          <button class="sm-item light" type="button" id="sm-align"><svg><use href="#i-grid"/></svg>アイコンを整列</button>
+        </div>
+      </div>
+      <div class="sm-foot">
+        <button type="button" id="sm-logoff"><span class="sm-key lock"><svg><use href="#i-key"/></svg></span>ログオフ</button>
+        <button type="button" id="sm-power"><span class="sm-key off"><svg><use href="#i-power"/></svg></span>電源を切る</button>
+      </div>
+    </div>
+
+    <!-- ============ taskbar ============ -->
+    <footer class="taskbar">
+      <button class="startbtn" id="startbtn" type="button" aria-haspopup="true" aria-expanded="false">
+        <svg><use href="#i-flag"/></svg>スタート
+      </button>
+      <div class="taskbtns" id="taskbtns"></div>
+      <div class="tray">
+        <svg><use href="#i-spk"/></svg>
+        <svg><use href="#i-globe"/></svg>
+        <span id="clock">--:--</span>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
