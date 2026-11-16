@@ -7,7 +7,7 @@ Windows XP（Lunaテーマ）風のデスクトップUIサンプルです。ボ�
 ブラウザで `index.html` を開くだけです。サーバーは不要です。
 
 - `index.html` — 1ファイル完結版。CSSもJavaScriptも中に埋め込んであります。そのまま開けます。
-- `separated/index.html` — 分離版。同じ内容を `index.html` / `style.css` / `script.js` に分けています。こちらもブラウザで開けます。
+- `separated/index.html` — 分離版。同じ内容を `index.html` / `style.css` / `js/`（ESモジュール）に分けています。ESモジュールを使っているため、Chrome ではファイルを直接開くと動かない場合があります。その場合はローカルサーバー（例: `cd separated && python3 -m http.server`）や GitHub Pages 経由で開いてください。詳しくは `separated/README.md` を見てください。
 
 ## 構成
 
@@ -18,10 +18,19 @@ Windows XP（Lunaテーマ）風のデスクトップUIサンプルです。ボ�
 └── separated/
     ├── index.html          # 分離版のHTML
     ├── style.css           # 分離版のCSS
-    └── script.js           # 分離版のJavaScript
+    ├── README.md           # 分離版の説明（モジュール構成）
+    └── js/                 # 分離版のJavaScript（ESモジュール）
+        ├── main.js         # 入口
+        ├── state.js        # 共有状態
+        ├── windows.js      # ウィンドウとタスクバー
+        ├── dialogs.js      # モーダルダイアログ
+        ├── icons.js        # デスクトップアイコン
+        ├── rename.js       # アイコンの名前変更
+        ├── panels.js       # 見本ウィンドウの中身
+        └── startmenu.js    # スタートメニューと時計
 ```
 
-1ファイル版と分離版は同じ内容です。見た目や動きは変わりません。編集しやすいのは分離版、配布しやすいのは1ファイル版です。
+1ファイル版と分離版は同じ内容です。見た目や動きは変わりません。編集しやすいのは分離版、配布しやすいのは1ファイル版です。分離版の JavaScript は機能ごとにモジュール化してあり、難しい処理には日本語のコメントを付けています。
 
 ## できること
 

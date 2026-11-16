@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- 読み方メモ:このファイルは画面の骨組みだけ。見た目は style.css、動きは script.js にある。 -->
+<!-- 読み方メモ:このファイルは画面の骨組みだけ。見た目は style.css、動きは js/ のモジュールにある（入口は js/main.js）。 -->
 <html lang="ja">
   <head>
     <meta charset="utf-8" />
@@ -506,6 +506,7 @@ XP 風 UI の要点
       </div>
     </footer>
 
-    <script src="script.js"></script>
+    <!-- 動きの入口。type="module" なので、js/main.js がほかのモジュールを import して動く。 -->
+    <script type="module" src="js/main.js"></script>
   </body>
 </html>
