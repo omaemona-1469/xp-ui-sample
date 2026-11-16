@@ -1,11 +1,13 @@
 (function(){
         "use strict";
         var desktop = document.getElementById('desktop');
+        /* 重なり順の番号。ウィンドウを開くたびに1ずつ増やし、後から開いたものが手前に来る */
         var zTop = 10;
         var statusMain = document.getElementById('status-main');
         function setStatus(t){ if(statusMain) statusMain.textContent = t; }
 
-        /* ---------- windows & taskbar ---------- */
+        /* ---------- ウィンドウとタスクバー ---------- */
+        /* querySelectorAllの結果は配列ではないので、sliceで本物の配列に変換する（forEachなどが使えるようになる）。:not(.dialog)でモーダルダイアログを除く */
         var wins = Array.prototype.slice.call(document.querySelectorAll('.window:not(.dialog)'));
         var taskbtns = document.getElementById('taskbtns');
         var taskMap = {};
@@ -32,7 +34,7 @@
         function syncTask(){
           wins.forEach(function(w){
             var b = taskMap[w.id];
-            /* closed windows are removed from the taskbar; minimized ones stay */
+            /* 閉じたウィンドウはタスクバーから消える。最小化したものは残る */
             b.style.display = w._closed ? 'none' : '';
             b.classList.toggle('active', !w._closed && w.style.display !== 'none' && w.classList.contains('active'));
           });
@@ -46,7 +48,7 @@
         function showWin(win){
           win._closed = false;
           win.style.display = '';
-          /* taskbar order follows launch order: move this window's button to the end */
+          /* タスクバーの並びは起動順にする。appendChildは、すでにある要素を一度外して末尾へ移す働きがある */
           var tb = taskMap[win.id];
           if (tb) taskbtns.appendChild(tb);
           focusWin(win);
@@ -66,25 +68,29 @@
               }
             });
           });
-          /* drag by titlebar */
+          /* タイトルバーをつかんでウィンドウを移動する */
           var bar = win.querySelector('.titlebar');
           var drag = null;
           bar.addEventListener('pointerdown', function(e){
             if (e.target.closest('.tbtn')) return;
             if (window.getComputedStyle(win).position !== 'absolute') return;
             if (win.classList.contains('maximized')) return;
+            /* つかんだ位置とウィンドウの左上の差を覚えておく。こうすると、つかんだ場所がずれないまま一緒に動く */
             drag = { dx: e.clientX - win.offsetLeft, dy: e.clientY - win.offsetTop };
+            /* ポインターをこの要素に結びつける。マウスが要素の外に出ても移動イベントを受け取れる */
             bar.setPointerCapture(e.pointerId);
           });
           bar.addEventListener('pointermove', function(e){
             if (!drag) return;
+            /* Math.maxとMath.minで範囲を絞る（クランプ）。画面の外へ行き過ぎないようにする */
             var maxX = desktop.clientWidth - 80, maxY = desktop.clientHeight - 34;
             win.style.left = Math.max(-win.offsetWidth + 120, Math.min(maxX, e.clientX - drag.dx)) + 'px';
             win.style.top = Math.max(0, Math.min(maxY, e.clientY - drag.dy)) + 'px';
           });
           bar.addEventListener('pointerup', function(){ drag = null; });
           bar.addEventListener('pointercancel', function(){ drag = null; });
-          /* resize by window edges / bottom-right grip */
+          /* 縁や右下のグリップをつかんでウィンドウの大きさを変える */
+          /* 最小サイズ。これより小さくはならない */
           var MINW = 280, MINH = 160;
           ['e', 'w', 's', 'se', 'sw'].forEach(function(dir){
             var h = document.createElement('div');
@@ -110,9 +116,11 @@
               var nw = rs.w, nh = rs.ht, nl = rs.l;
               if (dir.indexOf('e') >= 0) nw = rs.w + dx;
               if (dir.indexOf('s') >= 0) nh = rs.ht + dy;
+              /* 左の縁をつかんだときは、幅が変わると左端の位置も一緒に動かす必要がある */
               if (dir.indexOf('w') >= 0){ nw = rs.w - dx; nl = rs.l + dx; }
               var maxW = dir.indexOf('e') >= 0 ? desktop.clientWidth - rs.l : rs.l + rs.w;
               var maxH = desktop.clientHeight - rs.t;
+              /* 最小サイズ以上、デスクトップの範囲以内に収める */
               nw = Math.max(MINW, Math.min(Math.max(maxW, MINW), nw));
               nh = Math.max(MINH, Math.min(Math.max(maxH, MINH), nh));
               if (dir.indexOf('w') >= 0) nl = rs.l + (rs.w - nw);
@@ -131,7 +139,7 @@
         });
         syncTask();
 
-        /* open windows from desktop icons (double-click) / start menu (single click) */
+        /* デスクトップアイコンはダブルクリック、スタートメニューは1回のクリックでウィンドウを開く */
         document.querySelectorAll('[data-open]').forEach(function(el){
           var isIcon = el.classList.contains('dicon');
           function openTarget(){
@@ -140,19 +148,17 @@
             closeStart();
           }
           el.addEventListener('click', function(){
-            /* desktop icon selection is handled in the icon pointer handlers below
-               (single / Ctrl toggle / range drag); here a click only selects on the
-               static (phone) layout, where icons cannot be dragged */
+            /* デスクトップアイコンの選択は、下のポインター処理でまとめて行う。ここではスマホ用の固定レイアウト（ドラッグできない場合）だけ、クリックで選択する */
             if (isIcon && window.getComputedStyle(el).position !== 'absolute'){
               document.querySelectorAll('.dicon').forEach(function(d){ d.classList.remove('selected'); });
               el.classList.add('selected');
             }
-            /* desktop icons only select on a single click; they open on double-click */
+            /* デスクトップアイコンは1回のクリックでは選ぶだけ。開くのはダブルクリック */
             if (!isIcon) openTarget();
           });
           if (isIcon){
             el.addEventListener('dblclick', openTarget);
-            /* keyboard: Enter opens the focused icon */
+            /* キーボード:Enterキーで選んだアイコンを開く */
             el.addEventListener('keydown', function(e){
               if (e.key === 'Enter'){ e.preventDefault(); openTarget(); }
             });
@@ -160,8 +166,7 @@
         });
         var binIcon = document.getElementById('dicon-bin');
         binIcon.addEventListener('click', function(){
-          /* on the desktop layout selection is handled by the icon pointer handlers;
-             this click fallback only covers the static (phone) layout */
+          /* デスクトップ表示での選択はアイコンのポインター処理に任せる。この処理はスマホ用の固定レイアウトだけの予備 */
           if (window.getComputedStyle(binIcon).position === 'absolute') return;
           document.querySelectorAll('.dicon').forEach(function(d){ d.classList.remove('selected'); });
           binIcon.classList.add('selected');
@@ -176,7 +181,7 @@
           }
         });
 
-        /* ---------- desktop icons: multi-select, group drag, marquee, align ---------- */
+        /* ---------- デスクトップアイコン:複数選択・まとめて移動・範囲選択・整列 ---------- */
         var dicons = Array.prototype.slice.call(document.querySelectorAll('.dicon'));
         function deselectIcons(){
           dicons.forEach(function(d){ d.classList.remove('selected'); });
@@ -191,7 +196,7 @@
         function iconsAbsolute(){
           return dicons.length && window.getComputedStyle(dicons[0]).position === 'absolute';
         }
-        /* initial layout: stack the icons in a column at the left edge, as before */
+        /* 最初の配置:アイコンを左端に縦一列に並べる */
         (function layoutIcons(){
           if (!iconsAbsolute()) return;
           var y = 10;
@@ -201,8 +206,7 @@
             y += ic.offsetHeight + 6;
           });
         })();
-        /* arrange every icon on an even grid, filling the first column top-to-bottom
-           and then the next column, like XP's auto-arrange */
+        /* 全アイコンを等間隔の格子に並べる。1列目を上から下へ埋めてから次の列へ進む（XPの自動整列と同じ考え方） */
         function alignIcons(){
           if (!iconsAbsolute()){
             openDialog('info', 'アイコンを整列', 'この表示ではアイコンが横並びに固定されているため、整列は不要です。', ['OK']);
@@ -215,8 +219,10 @@
             cellH = Math.max(cellH, ic.offsetHeight);
           });
           cellW += gapX; cellH += gapY;
+          /* 1列に何個入るかを、デスクトップの高さ÷1個分の高さで計算する */
           var rows = Math.max(1, Math.floor((desktop.clientHeight - startY + gapY) / cellH));
           dicons.forEach(function(ic, i){
+            /* 何番目のアイコンかを、列番号と行番号に分ける。割り算の商が列、余りが行になる */
             var col = Math.floor(i / rows), row = i % rows;
             ic.classList.add('snap');
             ic.style.left = (startX + col * cellW) + 'px';
@@ -232,12 +238,12 @@
           ic.addEventListener('pointerdown', function(e){
             if (e.button !== undefined && e.button !== 0) return;
             if (!iconsAbsolute()) return;
-            /* Ctrl / Cmd click toggles just this icon; Shift click adds it */
+            /* Ctrlキー（MacはCmdキー）を押しながらクリックすると、そのアイコンだけ選択・解除を切り替える。Shiftキーなら追加する */
             if (e.ctrlKey || e.metaKey){ ic.classList.toggle('selected'); return; }
             if (e.shiftKey){ ic.classList.add('selected'); return; }
             wasInMulti = ic.classList.contains('selected') && selectedIcons().length > 1;
             if (!ic.classList.contains('selected')) selectOnly(ic);
-            /* drag moves every selected icon together, keeping their offsets */
+            /* ドラッグでは、選んだアイコン全員を、それぞれの位置関係を保ったまま一緒に動かす */
             drag = {
               x: e.clientX, y: e.clientY,
               items: selectedIcons().map(function(d){
@@ -250,10 +256,11 @@
           ic.addEventListener('pointermove', function(e){
             if (!drag) return;
             var dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+            /* 4ピクセル未満の小さな動きは「クリック」とみなし、ドラッグ扱いにしない */
             if (!moved && Math.abs(dx) + Math.abs(dy) < 4) return;
             moved = true;
             drag.items.forEach(function(it){ it.el.classList.add('dragging'); });
-            /* clamp the whole group so no selected icon leaves the desktop */
+            /* 選んだアイコン全体がデスクトップからはみ出さないよう、移動量を制限する */
             var minL = Infinity, minT = Infinity, maxR = -Infinity, maxB = -Infinity;
             drag.items.forEach(function(it){
               minL = Math.min(minL, it.l); minT = Math.min(minT, it.t);
@@ -272,13 +279,13 @@
             drag = null;
             items.forEach(function(it){ it.el.classList.remove('dragging'); });
             if (moved){
-              /* a drag that ends in a quick second tap must not open the window */
+              /* ドラッグ直後の素早い2回目のタップで、誤ってウィンドウが開かないようにする */
               items.forEach(function(it){
                 it.el._dragMoved = true;
                 setTimeout(function(){ it.el._dragMoved = false; }, 350);
               });
             } else if (wasInMulti){
-              /* plain click on one icon of a multi-selection narrows it to that icon */
+              /* 複数選んだ状態で1個だけクリックしたら、その1個だけの選択に戻す */
               selectOnly(ic);
             }
             wasInMulti = false;
@@ -291,7 +298,7 @@
           if (ic && ic._dragMoved){ e.stopPropagation(); e.preventDefault(); }
         }, true);
 
-        /* ---------- desktop icons: rename, XP style (F2 / slow click on the label) ---------- */
+        /* ---------- デスクトップアイコン:名前の変更（XP風。F2キー／名前をゆっくりクリック） ---------- */
         var renaming = null;
         var renameTimer = null;
         var downInfo = null;
@@ -302,6 +309,7 @@
           if (!renaming || renaming.done) return;
           renaming.done = true;
           var r = renaming; renaming = null;
+          /* 連続する空白を1個にまとめ、両端の空白を取る。空欄なら元の名前に戻す */
           var v = r.input.value.replace(/\s+/g, ' ').trim();
           if (save && v && v !== r.original){
             r.label.textContent = v;
@@ -347,13 +355,12 @@
             if (e.key === 'Enter'){ e.preventDefault(); finishRename(true, true); }
             else if (e.key === 'Escape'){ e.preventDefault(); finishRename(false, true); }
           });
+          /* 入力欄からフォーカスが外れたら（ほかをクリックしたら）確定する */
           input.addEventListener('blur', function(){ finishRename(true, false); });
           input.focus();
           try { input.select(); } catch (err) {}
         }
-        /* capture the press state before the icon handlers change the selection:
-           a rename starts only when the label of the already solely-selected icon
-           is clicked again. The start is delayed so a double-click still opens. */
+        /* 押した瞬間の状態を先に記録しておく。名前の変更は「すでに1個だけ選ばれているアイコンの名前」を、もう一度クリックしたときだけ始める。ダブルクリックと区別するため、開始は少し遅らせる */
         desktop.addEventListener('pointerdown', function(e){
           if (renaming && e.target !== renaming.input) finishRename(true, false);
           cancelRenameTimer();
@@ -375,6 +382,7 @@
             if (Math.abs(e.clientX - info.x) + Math.abs(e.clientY - info.y) > 6) return;
             if (ic._dragMoved) return;
             cancelRenameTimer();
+            /* 500ミリ秒待ってから名前変更を始める。この間にダブルクリックが来たらタイマーを消して、開く動作を優先する */
             renameTimer = setTimeout(function(){
               renameTimer = null;
               if (ic.classList.contains('selected') && selectedIcons().length === 1) startRename(ic);
@@ -399,8 +407,7 @@
           e.preventDefault();
           startRename(ic);
         });
-        /* rubber-band selection on empty desktop; a plain click there still
-           clears the selection, as before */
+        /* デスクトップの何もないところをドラッグすると、ゴムバンド（四角い枠）で範囲選択する。ただのクリックなら今までどおり選択を全部外す */
         var marquee = document.createElement('div');
         marquee.className = 'marquee';
         desktop.appendChild(marquee);
@@ -414,6 +421,7 @@
         function mqApply(){
           var rc = mqRect();
           dicons.forEach(function(ic){
+            /* アイコンと四角い枠が重なっているか、左右・上下の重なりで判定する */
             var hit = ic.offsetLeft < rc.r && ic.offsetLeft + ic.offsetWidth > rc.l &&
                       ic.offsetTop < rc.b && ic.offsetTop + ic.offsetHeight > rc.t;
             var keep = mq.additive && mq.prev.indexOf(ic) >= 0;
@@ -454,7 +462,7 @@
         desktop.addEventListener('pointerup', endMq);
         desktop.addEventListener('pointercancel', endMq);
 
-        /* ---------- menus ---------- */
+        /* ---------- メニュー ---------- */
         var openMenu = null;
         function closeMenus(){
           document.querySelectorAll('.menu.open').forEach(function(m){ m.classList.remove('open'); });
@@ -490,7 +498,7 @@
           });
         });
 
-        /* ---------- tabs ---------- */
+        /* ---------- タブ ---------- */
         document.querySelectorAll('.tab').forEach(function(tab){
           tab.addEventListener('click', function(){
             document.querySelectorAll('.tab').forEach(function(t){ t.setAttribute('aria-selected','false'); });
@@ -501,7 +509,7 @@
           });
         });
 
-        /* ---------- buttons tab ---------- */
+        /* ---------- ボタンのタブ ---------- */
         var count = 0, countEl = document.getElementById('btn-count');
         document.querySelectorAll('[data-count]').forEach(function(b){
           b.addEventListener('click', function(){
@@ -516,7 +524,7 @@
           });
         });
 
-        /* ---------- modal dialog ---------- */
+        /* ---------- モーダルダイアログ ---------- */
         var veil = document.getElementById('veil');
         var dlgTitle = document.getElementById('dlg-title');
         var dlgText = document.getElementById('dlg-text');
@@ -524,7 +532,7 @@
         var dlgBtns = document.getElementById('dlg-btns');
         var dlgResult = document.getElementById('dialog-result');
         var ICONS = { info:'#i-info', ques:'#i-ques', warn:'#i-warn', err:'#i-err' };
-        /* taskbar button for the modal dialog (e.g. ごみ箱): shown only while the dialog is open */
+        /* モーダルダイアログ（例:ごみ箱）用のタスクバーボタン。ダイアログが開いている間だけ表示する */
         var dlgTaskBtn = document.createElement('button');
         dlgTaskBtn.type = 'button';
         dlgTaskBtn.className = 'taskbtn active';
@@ -539,7 +547,7 @@
           if (show){
             var icon = (title === 'ごみ箱') ? '#i-bin' : (ICONS[type] || '#i-info');
             dlgTaskBtn.innerHTML = '<svg><use href="' + icon + '"/></svg>' + title;
-            /* dialog's taskbar button also follows launch order */
+            /* ダイアログのタスクバーボタンも起動順に並べる */
             taskbtns.appendChild(dlgTaskBtn);
             dlgTaskBtn.style.display = '';
             dlgTaskBtn.classList.add('active');
@@ -568,11 +576,11 @@
             dlgBtns.appendChild(b);
           });
           var dlgEl = document.getElementById('dlg');
-          /* reopen centered, even if it was dragged last time
-             (important: the phone layout pins left/top with !important) */
+          /* 前回ドラッグで動かしていても、開き直すときは中央に戻す。スマホ表示では位置が!importantで固定されるため、こちらも!importantで指定する */
           dlgEl.style.setProperty('left', '50%', 'important');
           dlgEl.style.setProperty('top', '38%', 'important');
           dlgEl.style.setProperty('transform', 'translate(-50%,-50%)', 'important');
+          /* ダイアログはウィンドウより手前に出すため、番号に900を足す */
           dlgEl.style.zIndex = ++zTop + 900;
           veil.classList.add('open');
           syncDlgTask(true, title, type);
@@ -580,7 +588,7 @@
           if (first) first.focus();
         }
         document.getElementById('dlg-x').addEventListener('click', function(){ closeDialog(); });
-        /* drag the modal dialog by its title bar */
+        /* モーダルダイアログもタイトルバーをつかんで移動できる */
         var dlgBox = document.getElementById('dlg');
         var dlgBar = dlgBox.querySelector('.titlebar');
         var dlgDrag = null;
@@ -589,8 +597,7 @@
           var r = dlgBox.getBoundingClientRect();
           var op = dlgBox.offsetParent;
           var opr = op ? op.getBoundingClientRect() : { left:0, top:0 };
-          /* switch from transform centering to explicit coordinates at the same spot
-             (important: the phone layout pins left/top with !important) */
+          /* 中央寄せはtransformで実現しているので、つかんだ瞬間に同じ場所の具体的な座標へ書き換える。そうしないと掴んだ瞬間に位置がずれてしまう */
           dlgBox.style.setProperty('transform', 'none', 'important');
           dlgBox.style.setProperty('left', (r.left - opr.left) + 'px', 'important');
           dlgBox.style.setProperty('top', (r.top - opr.top) + 'px', 'important');
@@ -622,7 +629,7 @@
           });
         });
 
-        /* ---------- form ---------- */
+        /* ---------- フォーム ---------- */
         document.getElementById('demo-form').addEventListener('submit', function(e){
           e.preventDefault();
           var name = document.getElementById('f-name').value.trim();
@@ -641,7 +648,7 @@
         document.getElementById('spin-up').addEventListener('click', function(){ spin(1); });
         document.getElementById('spin-down').addEventListener('click', function(){ spin(-1); });
 
-        /* ---------- lists ---------- */
+        /* ---------- リスト ---------- */
         document.querySelectorAll('#lv-body tr').forEach(function(tr){
           tr.addEventListener('click', function(){
             document.querySelectorAll('#lv-body tr').forEach(function(r){ r.classList.remove('selected'); });
@@ -669,7 +676,7 @@
           });
         });
 
-        /* ---------- progress & slider ---------- */
+        /* ---------- プログレスバーとスライダー ---------- */
         var progBar = document.getElementById('prog-bar');
         var progLabel = document.getElementById('prog-label');
         var timer = null;
@@ -695,11 +702,12 @@
           document.getElementById('vol-val').textContent = vol.value;
         });
 
-        /* ---------- calendar (current month) ---------- */
+        /* ---------- カレンダー（今月） ---------- */
         (function buildCal(){
           var now = new Date();
           var y = now.getFullYear(), m = now.getMonth(), today = now.getDate();
           var first = new Date(y, m, 1).getDay();
+          /* 「来月の0日」は「今月の末日」と同じ日になる。月末の日数を得るためのよく使う書き方 */
           var days = new Date(y, m + 1, 0).getDate();
           var prevDays = new Date(y, m, 0).getDate();
           var html = '<h4>' + y + '年 ' + (m + 1) + '月</h4><table><tr><th>日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr><tr>';
@@ -716,7 +724,7 @@
           document.getElementById('cal').innerHTML = html;
         })();
 
-        /* ---------- start menu & clock ---------- */
+        /* ---------- スタートメニューと時計 ---------- */
         var startbtn = document.getElementById('startbtn');
         var startmenu = document.getElementById('startmenu');
         function closeStart(){
@@ -753,6 +761,7 @@
         var clock = document.getElementById('clock');
         function tick(){
           var n = new Date();
+          /* 1桁の数に0を付けて2桁にする（例:9時5分→09:05）。slice(-2)は末尾2文字だけを取り出す */
           clock.textContent = ('0' + n.getHours()).slice(-2) + ':' + ('0' + n.getMinutes()).slice(-2);
           clock.title = n.getFullYear() + '年' + (n.getMonth() + 1) + '月' + n.getDate() + '日';
         }

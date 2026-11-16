@@ -23,7 +23,7 @@
       button{ font-family:inherit; font-size:13px; color:inherit; }
       ::selection{ background:var(--sel); color:#fff; }
 
-      /* ---------- scrollbars (webkit) ---------- */
+      /* ---------- スクロールバー（WebKit系ブラウザ用） ---------- */
       .scrollable::-webkit-scrollbar, textarea::-webkit-scrollbar{ width:17px; height:17px; }
       .scrollable::-webkit-scrollbar-track, textarea::-webkit-scrollbar-track{ background:#f1efe4; }
       .scrollable::-webkit-scrollbar-thumb, textarea::-webkit-scrollbar-thumb{
@@ -34,7 +34,7 @@
         background-color:#e9e5d2; background-repeat:no-repeat; background-position:center;
         border:1px solid #c8c2ac; width:17px; height:17px;
       }
-      /* XP style: one button per end — ▲ at the top, ▼ at the bottom (◀ / ▶ sideways) */
+      /* XP風:バーの端のボタンは1個ずつ。上端に▲、下端に▼（横向きは◀と▶） */
       .scrollable::-webkit-scrollbar-button:vertical:decrement, textarea::-webkit-scrollbar-button:vertical:decrement{
         background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='6'%3E%3Cpath d='M4 0l4 6H0z' fill='%23444444'/%3E%3C/svg%3E"), linear-gradient(135deg,#fdfcfa,#e3dfcd);
       }
@@ -47,8 +47,7 @@
       .scrollable::-webkit-scrollbar-button:horizontal:increment, textarea::-webkit-scrollbar-button:horizontal:increment{
         background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='8'%3E%3Cpath d='M0 0v8l6-4z' fill='%23444444'/%3E%3C/svg%3E"), linear-gradient(135deg,#fdfcfa,#e3dfcd);
       }
-      /* hide the second button of a double-button pair: the ▼ paired at the top end
-         and the ▲ paired at the bottom end (and the sideways equivalents) */
+      /* ブラウザが両端に2個ずつボタンを描こうとするので、2個目を隠す。上端の▼と下端の▲（横向きも同じ）が対象 */
       .scrollable::-webkit-scrollbar-button:vertical:increment:start,
       .scrollable::-webkit-scrollbar-button:vertical:decrement:end,
       .scrollable::-webkit-scrollbar-button:horizontal:increment:start,
@@ -60,7 +59,7 @@
         display:none;
       }
 
-      /* ---------- desktop ---------- */
+      /* ---------- デスクトップ ---------- */
       .desktop{
         position:relative;
         height:calc(100dvh - 40px);
@@ -74,6 +73,7 @@
       .hills{ position:absolute; left:0; right:0; bottom:0; width:100%; height:34%; min-height:120px; pointer-events:none; }
       .desktop-icons{
         position:absolute; inset:0; z-index:1;
+        /* 親はクリックを受け取らず、アイコンだけが受け取る。こうすると何もない場所のクリックがデスクトップに届く */
         pointer-events:none;
       }
       .dicon{
@@ -82,6 +82,7 @@
         display:flex; flex-direction:column; align-items:center; gap:5px;
         background:none; border:1px dotted transparent; cursor:pointer;
         color:#fff; text-align:center;
+        /* user-select:noneは文字の選択を禁止する。アイコンの名前をドラッグしても文字が選ばれないようにするため */
         user-select:none; -webkit-user-select:none;
       }
       .dicon.dragging{ cursor:grabbing; opacity:.85; z-index:5; }
@@ -90,7 +91,7 @@
         font-size:12px; line-height:1.25; text-shadow:1px 1px 2px rgba(0,0,0,.85); padding:0 2px;
         user-select:none; -webkit-user-select:none; cursor:inherit;
       }
-      /* inline rename box (F2 / slow click on the label), laid over the label */
+      /* 名前変更用の入力欄（F2キー／名前をゆっくりクリックで表示）。名前の上に重ねて置く */
       .rename-input{
         position:absolute; z-index:6; margin:0; padding:1px 2px;
         font-family:inherit; font-size:12px; line-height:1.25; text-align:center;
@@ -106,7 +107,7 @@
         border:1px dotted #fff; background:rgba(49,106,197,.28);
       }
 
-      /* ---------- window frame ---------- */
+      /* ---------- ウィンドウの枠 ---------- */
       .window{
         position:absolute;
         display:flex; flex-direction:column;
@@ -115,13 +116,14 @@
         border-radius:9px 9px 4px 4px;
         box-shadow:2px 3px 14px rgba(0,20,80,.5), inset 0 0 0 1px rgba(255,255,255,.25);
         min-width:280px; min-height:160px;
+        /* isolation:isolateは、この要素の中に重なり順の世界を閉じ込める。右下グリップのz-indexが、ほかのウィンドウの手前に漏れ出さないようにするため */
         isolation:isolate;
       }
-      /* showcase windows: clip content at the frame and scroll inside when shrunk */
+      /* 見本ウィンドウ:中身が枠からはみ出さないよう切り取り、縮めたときは中でスクロールする */
       #win-dialogs, #win-main{ overflow:hidden; }
       #win-dialogs .winbody, #win-main .winbody{ overflow-y:auto; overflow-x:hidden; }
       .window.maximized{ left:0 !important; top:0 !important; width:100% !important; height:100% !important; border-radius:0; }
-      /* ---------- window resize handles ---------- */
+      /* ---------- ウィンドウのサイズ変更ハンドル ---------- */
       .resize-handle{ position:absolute; z-index:60; touch-action:none; }
       .resize-handle[data-dir="e"]{ right:0; top:14px; bottom:16px; width:7px; cursor:ew-resize; }
       .resize-handle[data-dir="w"]{ left:0; top:14px; bottom:16px; width:7px; cursor:ew-resize; }
@@ -167,7 +169,7 @@
       .tbtn svg{ width:11px; height:11px; pointer-events:none; }
       .winbody{ flex:1 1 auto; display:flex; flex-direction:column; min-height:0; }
 
-      /* ---------- menu bar / toolbar ---------- */
+      /* ---------- メニューバー／ツールバー ---------- */
       .menubar{ display:flex; align-items:stretch; padding:1px 2px; position:relative; z-index:30; }
       .menubar > .mitem{ position:relative; }
       .mbtn{
@@ -209,7 +211,7 @@
         background:#fff; border:1px solid var(--input-border); padding:2px 6px;
       }
 
-      /* ---------- status bar ---------- */
+      /* ---------- ステータスバー ---------- */
       .statusbar{
         flex:0 0 auto; display:flex; gap:2px; padding:2px 2px 3px;
         border-top:1px solid #d4d0c8;
@@ -221,7 +223,7 @@
       }
       .statusbar .grow{ flex:1; }
 
-      /* ---------- XP controls ---------- */
+      /* ---------- XP風コントロール ---------- */
       .xp-btn{
         min-height:32px; padding:4px 16px; cursor:pointer;
         background:linear-gradient(180deg,#ffffff 0%,#f1efe4 45%,#e6e2d2 100%);
@@ -301,7 +303,7 @@
       }
       .checkline input:focus-visible, .radioline input:focus-visible{ outline:1px dotted #3a3a3a; outline-offset:2px; }
 
-      /* tabs */
+      /* タブ */
       .tabstrip{ display:flex; gap:2px; padding:6px 8px 0; flex-wrap:wrap; }
       .tab{
         min-height:32px; padding:5px 14px; cursor:pointer; position:relative; z-index:1;
@@ -315,10 +317,10 @@
         overflow-y:auto; min-height:0;
         flex:1 1 auto;
       }
-      /* keep the status bar pinned to the window's bottom edge */
+      /* ステータスバーをウィンドウの下端に固定する（margin-top:autoで余ったすき間を上に寄せる） */
       #win-main .statusbar{ margin-top:auto; flex:0 0 auto; }
 
-      /* listview */
+      /* リストビュー */
       .listview{ border:1px solid var(--input-border); background:#fff; overflow:auto; }
       .listview table{ border-collapse:collapse; width:100%; font-size:12.5px; }
       .listview th{
@@ -335,7 +337,7 @@
       }
       .listbox option{ padding:4px 6px; min-height:26px; }
 
-      /* tree */
+      /* ツリー */
       .tree{ background:#fff; border:1px solid var(--input-border); padding:6px; font-size:13px; overflow:auto; }
       .tree ul{ list-style:none; margin:0; padding-left:19px; }
       .tree > ul{ padding-left:2px; }
@@ -349,7 +351,7 @@
       .tspacer{ width:11px; flex:0 0 auto; }
       .tree .collapsed > ul{ display:none; }
 
-      /* progress / slider / spin */
+      /* プログレスバー／スライダー／スピンボタン */
       .progress{
         height:18px; background:#fff; border:1px solid #686868; border-radius:2px; padding:2px;
         box-shadow:inset 1px 1px 2px rgba(0,0,0,.15);
@@ -381,7 +383,7 @@
       }
       .spinbtns button:active{ background:#cfc9ae; }
 
-      /* calendar */
+      /* カレンダー */
       .cal{ border:1px solid var(--input-border); background:#fff; padding:6px; width:100%; }
       .cal h4{ margin:0 0 4px; text-align:center; color:#0046d5; font-size:13px; }
       .cal table{ border-collapse:collapse; width:100%; text-align:center; font-size:12px; }
@@ -402,7 +404,7 @@
       h3.sect{ margin:0 0 8px; font-size:13px; color:#0046d5; font-weight:bold; }
       p.lead{ margin:0 0 12px; line-height:1.6; }
 
-      /* notepad */
+      /* メモ帳 */
       .notepad-area{
         flex:1; width:100%; border:none; resize:none; padding:4px 6px;
         font-family:"MS Gothic","Osaka-Mono",monospace; font-size:13px; line-height:1.6; background:#fff;
@@ -410,7 +412,8 @@
       }
       .notepad-area:focus{ outline:none; }
 
-      /* ---------- modal dialog ---------- */
+      /* ---------- モーダルダイアログ ---------- */
+      /* モーダルダイアログの覆い。画面全体を覆うが、pointer-events:noneでクリックを素通りさせる。ダイアログ自体だけがクリックを受け取るので、表示中もほかのウィンドウを開ける */
       .dialog-veil{ position:absolute; inset:0; z-index:900; display:none; pointer-events:none; }
       .dialog-veil.open{ display:block; }
       .dialog-veil .dialog{ pointer-events:auto; }
@@ -422,7 +425,7 @@
       .dialog .dbtns{ display:flex; justify-content:center; gap:8px; margin-top:14px; }
       .dialog .dbtns .xp-btn{ min-width:96px; }
 
-      /* ---------- taskbar ---------- */
+      /* ---------- タスクバー ---------- */
       .taskbar{
         position:fixed; left:0; right:0; bottom:0; height:40px; z-index:1000;
         display:flex; align-items:stretch;
@@ -461,7 +464,7 @@
       }
       .tray svg{ width:15px; height:15px; }
 
-      /* ---------- start menu ---------- */
+      /* ---------- スタートメニュー ---------- */
       .startmenu{
         position:fixed; left:0; bottom:40px; z-index:1100; width:min(392px,96vw);
         display:none; flex-direction:column;
@@ -518,7 +521,7 @@
       @media (max-width:760px){
         .desktop{ overflow-y:auto; overflow-x:hidden; }
         .window{ position:relative !important; left:auto !important; top:auto !important; width:auto !important; margin:10px 8px 14px; }
-        /* keep the main window short enough on phones that the next window's title bar clears the taskbar band */
+        /* スマホ表示ではメインウィンドウを短めにし、次のウィンドウのタイトルバーがタスクバーに隠れないようにする */
         #win-main{ height:min(520px, calc(100dvh - 180px)) !important; }
         .resize-handle{ display:none; }
         .desktop-icons{ position:static; display:flex; flex-direction:row; flex-wrap:wrap; padding:10px 6px 0; pointer-events:auto; }

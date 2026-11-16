@@ -1,4 +1,5 @@
 <!doctype html>
+<!-- 読み方メモ:このファイルは画面の骨組みだけ。見た目は style.css、動きは script.js にある。 -->
 <html lang="ja">
   <head>
     <meta charset="utf-8" />
@@ -10,7 +11,7 @@
   </head>
   <body>
 
-    <!-- icon sprite -->
+    <!-- アイコン集（SVGスプライト）。<use>で何度でも使い回す。1か所にまとめてあるので追加もしやすい -->
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
       <defs>
         <symbol id="i-flag" viewBox="0 0 24 24">
@@ -141,7 +142,7 @@
         </button>
       </nav>
 
-      <!-- ============ main showcase window ============ -->
+      <!-- ============ メインの見本ウィンドウ（UIコンポーネント） ============ -->
       <section class="window active" id="win-main" data-title="コントロール見本 — UIコンポーネント" style="left:110px; top:18px; width:min(680px,94vw); height:min(600px,calc(100dvh - 70px));" aria-label="UIコンポーネント見本ウィンドウ">
         <header class="titlebar">
           <svg class="ticon"><use href="#i-gear"/></svg>
@@ -200,7 +201,7 @@
             <button class="tab" role="tab" type="button" aria-selected="false" data-tab="p-etc">進捗・その他</button>
           </div>
 
-          <!-- tab: buttons -->
+          <!-- タブ:ボタン -->
           <div class="tabpage scrollable" id="p-buttons" role="tabpanel">
             <p class="lead">Luna テーマのボタンです。ホバーでオレンジに光り、押すと沈み込みます。既定のボタンは青い縁取りが入ります。</p>
             <div class="stack">
@@ -230,7 +231,7 @@
             </div>
           </div>
 
-          <!-- tab: form -->
+          <!-- タブ:フォーム -->
           <div class="tabpage scrollable" id="p-form" role="tabpanel" hidden>
             <form id="demo-form" novalidate>
               <div class="grid2">
@@ -289,7 +290,7 @@
             </form>
           </div>
 
-          <!-- tab: lists -->
+          <!-- タブ:リストとツリー -->
           <div class="tabpage scrollable" id="p-lists" role="tabpanel" hidden>
             <div class="stack">
               <div>
@@ -345,7 +346,7 @@
             </div>
           </div>
 
-          <!-- tab: etc -->
+          <!-- タブ:進捗・その他 -->
           <div class="tabpage scrollable" id="p-etc" role="tabpanel" hidden>
             <div class="stack">
               <fieldset class="group">
@@ -387,7 +388,7 @@
         </div>
       </section>
 
-      <!-- ============ dialogs showcase window ============ -->
+      <!-- ============ ダイアログの見本ウィンドウ ============ -->
       <section class="window" id="win-dialogs" data-title="ダイアログの見本" style="left:806px; top:60px; width:min(330px,92vw);" aria-label="ダイアログ見本ウィンドウ">
         <header class="titlebar">
           <svg class="ticon"><use href="#i-ques"/></svg>
@@ -412,7 +413,7 @@
         <footer class="statusbar"><span class="panel grow">4 種類のダイアログ</span></footer>
       </section>
 
-      <!-- ============ notepad window ============ -->
+      <!-- ============ メモ帳ウィンドウ ============ -->
       <section class="window" id="win-notepad" data-title="無題 — メモ帳" style="left:830px; top:330px; width:min(340px,92vw); height:250px;" aria-label="メモ帳ウィンドウ">
         <header class="titlebar">
           <svg class="ticon"><use href="#i-doc"/></svg>
@@ -440,7 +441,7 @@ XP 風 UI の要点
         </div>
       </section>
 
-      <!-- modal dialog -->
+      <!-- モーダルダイアログ（覆いの中に入っている） -->
       <div class="dialog-veil" id="veil">
         <section class="window dialog active" id="dlg" style="left:50%; top:38%; transform:translate(-50%,-50%);" role="alertdialog" aria-modal="true" aria-labelledby="dlg-title">
           <header class="titlebar">
@@ -460,7 +461,7 @@ XP 風 UI の要点
       </div>
     </div>
 
-    <!-- ============ start menu ============ -->
+    <!-- ============ スタートメニュー ============ -->
     <div class="startmenu" id="startmenu" role="menu" aria-label="スタート メニュー">
       <div class="sm-head">
         <span class="sm-avatar"><svg><use href="#i-flower"/></svg></span>
@@ -492,7 +493,7 @@ XP 風 UI の要点
       </div>
     </div>
 
-    <!-- ============ taskbar ============ -->
+    <!-- ============ タスクバー ============ -->
     <footer class="taskbar">
       <button class="startbtn" id="startbtn" type="button" aria-haspopup="true" aria-expanded="false">
         <svg><use href="#i-flag"/></svg>スタート
